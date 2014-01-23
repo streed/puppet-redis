@@ -12,6 +12,8 @@
 #
 class redis::params {
 
+  $version_family = '2.6'
+
   case $::operatingsystem {
     'centos', 'redhat', 'fedora', 'amazon': {
       $package        = 'redis'

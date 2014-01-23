@@ -410,6 +410,7 @@ slowlog-log-slower-than <%= @conf_slowlog_log_slower_than %>
 # You can reclaim memory used by the slow log with SLOWLOG RESET.
 slowlog-max-len <%= @conf_slowlog_max_len %>
 
+<% if @version_family.to_f <= 2.4 %>
 ################################ VIRTUAL MEMORY ###############################
 
 ### WARNING! Virtual Memory is deprecated in Redis 2.4
@@ -484,7 +485,7 @@ vm-pages <%= @conf_vm_pages %>
 # The special value of 0 turn off threaded I/O and enables the blocking
 # Virtual Memory implementation.
 vm-max-threads <%= @conf_vm_max_threads %>
-
+<% end %>
 ############################### ADVANCED CONFIG ###############################
 
 # Hashes are encoded in a special way (much more memory efficient) when they

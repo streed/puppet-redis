@@ -84,6 +84,12 @@ class redis (
 
   include redis::params
 
+  $version_family = $package_ensure ? {
+    /2\.6\..*/ => '2.6',
+    /2\.4\..*/ => '2.4',
+    default    => $redis::params::version_family
+  }
+
   $conf_template  = $redis::params::conf_template
   $conf_redis     = $redis::params::conf
   $conf_logrotate = $redis::params::conf_logrotate
