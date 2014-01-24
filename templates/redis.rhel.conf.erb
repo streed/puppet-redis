@@ -53,7 +53,7 @@ timeout <%= @conf_timeout %>
 # On other kernels the period depends on the kernel configuration.
 #
 # A reasonable value for this option is 60 seconds.
-tcp-keepalive 0
+tcp-keepalive <%= @conf_tcp_keepalive %>
 
 # Specify the server verbosity level.
 # This can be one of:
@@ -144,7 +144,7 @@ save 60 10000
 # and persistence, you may want to disable this feature so that Redis will
 # continue to work as usually even if there are problems with disk,
 # permissions, and so forth.
-stop-writes-on-bgsave-error yes
+stop-writes-on-bgsave-error <%= @conf_stop_writes_on_bgsave_error %>
 
 # Compress string objects using LZF when dump .rdb databases?
 # For default that's set to 'yes' as it's almost always a win.
@@ -159,7 +159,7 @@ rdbcompression <%= @conf_rdbcompression %>
 #
 # RDB files created with checksum disabled have a checksum of zero that will
 # tell the loading code to skip the check.
-rdbchecksum yes
+rdbchecksum <%= @conf_rdbchecksum %>
 
 # The filename where to dump the DB
 dbfilename <%= @conf_dbfilename %>
@@ -225,7 +225,7 @@ slave-serve-stale-data <%= @conf_slave_server_stale_data %>
 # such as CONFIG, DEBUG, and so forth. To a limited extend you can improve
 # security of read only slaves using 'rename-command' to shadow all the
 # administrative / dangerous commands.
-slave-read-only yes
+slave-read-only <%= @conf_slave_read_only %>
 
 # Slaves send PINGs to server in a predefined interval. It's possible to change
 # this interval with the repl_ping_slave_period option. The default value is 10
@@ -255,7 +255,7 @@ repl-timeout <%= @conf_repl_timeout %>
 # By default we optimize for low latency, but in very high traffic conditions
 # or when the master and slaves are many hops away, turning this to "yes" may
 # be a good idea.
-repl-disable-tcp-nodelay no
+repl-disable-tcp-nodelay <%= @conf_repl_disable_tcp_nodelay %>
 
 # The slave priority is an integer number published by Redis in the INFO output.
 # It is used by Redis Sentinel in order to select a slave to promote into a
@@ -270,7 +270,7 @@ repl-disable-tcp-nodelay no
 # Redis Sentinel for promotion.
 #
 # By default the priority is 100.
-slave-priority 100
+slave-priority <%= @conf_slave_priority %>
 
 ################################## SECURITY ###################################
 
@@ -500,7 +500,7 @@ auto-aof-rewrite-min-size <%= @conf_auto_aof_rewrite_min_size %>
 # termination of the script.
 #
 # Set it to 0 or a negative value for unlimited execution without warnings.
-lua-time-limit 5000
+lua-time-limit <%= @conf_lua_time_limit %>
 
 ################################## SLOW LOG ###################################
 
@@ -687,9 +687,9 @@ activerehashing <%= @conf_activerehashing %>
 # subscribers and slaves receive data in a push fashion.
 #
 # Both the hard or the soft limit can be disabled by setting them to zero.
-client-output-buffer-limit normal 0 0 0
-client-output-buffer-limit slave 256mb 64mb 60
-client-output-buffer-limit pubsub 32mb 8mb 60
+client-output-buffer-limit normal <%= @conf_client_output_buffer_limit_normal %>
+client-output-buffer-limit slave <%= @conf_client_output_buffer_limit_slave %>
+client-output-buffer-limit pubsub <%= @conf_client_output_buffer_limit_pubsub %>
 
 # Redis calls an internal function to perform many background tasks, like
 # closing connections of clients in timeot, purging expired keys that are
@@ -706,13 +706,13 @@ client-output-buffer-limit pubsub 32mb 8mb 60
 # The range is between 1 and 500, however a value over 100 is usually not
 # a good idea. Most users should use the default of 10 and raise this up to
 # 100 only in environments where very low latency is required.
-hz 10
+hz <%= @conf_hz %>
 
 # When a child rewrites the AOF file, if the following option is enabled
 # the file will be fsync-ed every 32 MB of data generated. This is useful
 # in order to commit the file to the disk more incrementally and avoid
 # big latency spikes.
-aof-rewrite-incremental-fsync yes
+aof-rewrite-incremental-fsync <%= @conf_aof_rewrite_incremental_fsync %>
 
 ################################## INCLUDES ###################################
 
