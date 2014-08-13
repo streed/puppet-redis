@@ -182,7 +182,7 @@ dir <%= @conf_dir %>
 # different interval, or to listen to another port, and so on.
 #
 <% if @conf_slaveof != 'UNSET' %>
-slaveof <%= @conf_slaveof %>
+slaveof <%= @conf_slaveof %> 6379
 <% else %>
 # slaveof <masterip> <masterport>
 <% end %>

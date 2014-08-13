@@ -124,7 +124,7 @@ class redis (
     $conf_logfile_real = $::redis::params::logfile
   }
 
-  if $version_family != '2.8' {
+  if $version_family == '2.8' {
     $redis_tmp_directory = "/tmp/redis-${package_ensure}"
     $redis_download_url = "http://download.redis.io/releases/redis-2.8.13.tar.gz"
 
@@ -163,15 +163,23 @@ class redis (
     exec { "redis::install::restart":
       command => "/etc/init.d/redis restart",
       path    => $::path,
-      require => Exec["redis::install::update::init.d"]
+      require => Exec["redis::install::update::init.d"],
+      notify  => Service["redis"],
     }
-
 
     package { 'redis':
       name => $package
     }
 
   } else {
+    exec { "redis::package::update::init.d":
+      command => "sed -i 's/local\/bin/sbin/g' /etc/init.d/redis",
+      user    => 'root',
+      group   => 'root',
+      path    => $::path,
+      notify  => Service["redis"],
+    }
+
     package { 'redis':
       ensure => $package_ensure,
       name   => $package,
@@ -191,7 +199,7 @@ class redis (
 
   file { $conf_redis:
     path    => $conf_redis,
-    content => template('redis/redis.conf.erb'),
+    content => template("redis/${conf_template}"),
     owner   => root,
     group   => root,
     mode    => '0644',
@@ -200,7 +208,7 @@ class redis (
 
   file { $conf_logrotate:
     path    => $conf_logrotate,
-    content => template('redis/logrotate.erb'),
+    content => template('redis/redis.logrotate.erb'),
     owner   => root,
     group   => root,
     mode    => '0644',
@@ -225,20 +233,7 @@ class redis (
     require => Exec[$conf_dir],
   }
 
-<<<<<<< HEAD
-  if ( $system_sysctl == true ) {
-    # add necessary kernel parameters
-    # see the redis admin guide here: http://redis.io/topics/admin
-    sysctl { 'vm.overcommit_memory':
-      value     => '1',
-    }
-  }
-
   if $service_restart == true {
-    # https://github.com/fsalum/puppet-redis/pull/28
-=======
-  if $service_restart == true {
->>>>>>> c19605440f3564c3e62920b0b59bd3def8aa4287
     Exec[$conf_dir] ~> Service['redis']
     File[$conf_redis] ~> Service['redis']
   }

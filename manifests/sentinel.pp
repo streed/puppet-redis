@@ -43,6 +43,7 @@ class redis::sentinel (
   $conf_port                = '26379',
   $conf_dir                 = '/tmp/redis',
   $conf_daemonize           = 'yes',
+  $conf_logfile             = '/var/log/redis/sentinel.log',
   $sentinel_confs           = [],
   $service_enable           = true,
   $service_ensure           = 'running',
@@ -97,23 +98,31 @@ class redis::sentinel (
   # only if it changed.
   file { $conf_sentinel_orig:
     content => template('redis/sentinel.conf.erb'),
-    owner   => redis,
-    group   => redis,
+    owner   => 'root',
+    group   => 'root',
     mode    => '0644',
-    require => User['redis'],
-    notify  => Exec["cp ${conf_sentinel_orig} ${conf_sentinel}"],
+    notify  => Exec["redis::sentinel::copy::config"],
   }
 
-  exec { "cp ${conf_sentinel_orig} ${conf_sentinel}":
+  exec { 'redis::sentinel::copy::config':
+    command     => "cp ${conf_sentinel_orig} ${conf_sentinel}",
     refreshonly => true,
-    user        => redis,
-    group       => redis,
-    notify      => Service['sentinel'],
+    user        => root,
+    group       => root,
+    path        => $::path,
+    notify      => Exec["redis::sentinel::chown::configs"]
+  }
+
+  exec { 'redis::sentinel::chown::configs':
+    command => "chown redis:redis /etc/sentinel.* && chown redis:redis /mnt/redis/*",
+    user    => root,
+    group   => root,
+    notify  => Service['sentinel'], 
+    path    => $::path,
   }
 
   file { $conf_logrotate:
-    path    => $conf_logrotate,
-    content => template('redis/logrotate.erb'),
+    content => template('redis/redis.logrotate.erb'),
     owner   => root,
     group   => root,
     mode    => '0644',
@@ -134,8 +143,7 @@ class redis::sentinel (
     group   => redis,
     mode    => '0755',
     before  => Service['sentinel'],
-    require => [ Exec[$conf_dir],
-                 User['redis'] ],
+    require => Exec[$conf_dir],
   }
 
   if $service_restart == true {
@@ -148,13 +156,8 @@ class redis::sentinel (
     file { $upstart_script:
       ensure  => present,
       content => template('redis/sentinel-init.conf.erb'),
+      mode    => "+x",
     }
-  }
-
-  # Sentinel should be able to work without redis-server
-  # We must assure redis user exists
-  user { 'redis':
-    ensure => present,
   }
 
   file { '/etc/redis':
