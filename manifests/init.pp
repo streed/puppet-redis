@@ -98,7 +98,6 @@ class redis (
   $version_family = $package_ensure ? {
     /2\.8\..*/ => '2.8',
     /2\.6\..*/ => '2.6',
-    /2\.4\..*/ => '2.4',
     default    => $redis::params::version_family
   }
 
@@ -125,7 +124,7 @@ class redis (
     $conf_logfile_real = $::redis::params::logfile
   }
 
-  if $version_family != '2.6' {
+  if $version_family != '2.8' {
     $redis_tmp_directory = "/tmp/redis-${package_ensure}"
     $redis_download_url = "http://download.redis.io/releases/redis-2.8.13.tar.gz"
 
