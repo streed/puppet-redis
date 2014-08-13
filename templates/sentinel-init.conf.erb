@@ -1,14 +1,88 @@
-# redis-sentinel - Redis Datastore Server
+!/bin/sh
 #
-# Redis is a key value in memory persistent datastore
+# redis        init file for starting up the redis daemon
+#
+# chkconfig:   - 20 80
+# description: Starts and stops the redis daemon.
 
-start on (local-filesystems and runlevel [2345])
-stop on runlevel [016]
-respawn
-expect fork
-limit nofile 20000 65000
-pre-start script
-mkdir -p /var/run/redis-sentinel
-chown redis:redis /var/run/redis-sentinel
-end script
-exec start-stop-daemon --start --chuid redis:redis --pidfile <%= @conf_pidfile_real %> --umask 007 --exec /usr/bin/redis-sentinel -- <%= @conf_sentinel %>
+# Source function library.
+. /etc/rc.d/init.d/functions
+
+name="redis-server"
+exec="/usr/local/bin/$name"
+pidfile="/var/run/redis/redis-sentinel.pid"
+REDIS_CONFIG="/etc/sentinel.conf"
+
+[ -e /etc/sysconfig/redis ] && . /etc/sysconfig/redis
+
+lockfile=/var/lock/subsys/redis-sentinel
+
+start() {
+  [ -f $REDIS_CONFIG ] || exit 6
+  [ -x $exec ] || exit 5
+  echo -n $"Starting $name: "
+  daemon --user ${REDIS_USER-redis} "$exec $REDIS_CONFIG" --sentinel
+  retval=$?
+  echo
+  [ $retval -eq 0 ] && touch $lockfile
+  return $retval
+}
+
+stop() {
+  echo -n $"Stopping $name: "
+  killproc -p $pidfile $name
+  retval=$?
+  echo
+  [ $retval -eq 0 ] && rm -f $lockfile
+  return $retval
+}
+
+restart() {
+  stop
+  start
+}
+
+reload() {
+  false
+}
+
+rh_status() {
+  status -p $pidfile $name
+}
+
+rh_status_q() {
+  rh_status >/dev/null 2>&1
+}
+
+
+case "$1" in
+  start)
+    rh_status_q && exit 0
+    $1
+    ;;
+  stop)
+    rh_status_q || exit 0
+    $1
+    ;;
+  restart)
+    $1
+    ;;
+  reload)
+    rh_status_q || exit 7
+    $1
+    ;;
+  force-reload)
+    force_reload
+    ;;
+  status)
+    rh_status
+    ;;
+  condrestart|try-restart)
+    rh_status_q || exit 0
+    restart
+    ;;
+  *)
+    echo $"Usage: $0 {start|stop|status|restart|condrestart|try-restart}"
+    exit 2
+esac
+exit $?

@@ -78,7 +78,6 @@ class redis::sentinel (
       require    => [ Exec[$conf_dir],
                       File[$conf_sentinel_orig],
                       File[$upstart_script] ],
-      provider   => 'upstart'
     }
   } else {
     service { 'sentinel':
