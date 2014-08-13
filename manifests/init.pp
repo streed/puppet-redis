@@ -225,20 +225,7 @@ class redis (
     require => Exec[$conf_dir],
   }
 
-<<<<<<< HEAD
-  if ( $system_sysctl == true ) {
-    # add necessary kernel parameters
-    # see the redis admin guide here: http://redis.io/topics/admin
-    sysctl { 'vm.overcommit_memory':
-      value     => '1',
-    }
-  }
-
   if $service_restart == true {
-    # https://github.com/fsalum/puppet-redis/pull/28
-=======
-  if $service_restart == true {
->>>>>>> c19605440f3564c3e62920b0b59bd3def8aa4287
     Exec[$conf_dir] ~> Service['redis']
     File[$conf_redis] ~> Service['redis']
   }
