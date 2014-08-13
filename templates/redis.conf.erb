@@ -1,4 +1,3 @@
-<%- if @redis_version == "2.2.x" -%>
 # MANAGED BY PUPPET #
 #
 # Redis 2.2 configuration file example
@@ -2786,5 +2785,4 @@ aof-rewrite-incremental-fsync <%= @conf_aof_rewrite_incremental_fsync %>
 <%- if @conf_append -%>
 <%- @conf_append.sort.each do |variable, value| -%>
 <%= variable %> <%= value %><%= "\n" -%>
-<%- end -%>
 <%- end -%>

@@ -165,6 +165,13 @@ class redis (
       require => Exec["redis::install::make::install"],
     }
 
+    exec { "redis::install::restart":
+      command => "/etc/init.d/redis restart",
+      path    => $::path,
+      require => Exec["redis::install::update::init.d"]
+    }
+
+
     package { 'redis':
       name => $package
     }
