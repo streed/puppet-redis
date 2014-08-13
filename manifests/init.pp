@@ -132,12 +132,17 @@ class redis (
   if $package_ensure == "2.8.13" {
     $redis_tmp_directory = "/tmp/redis-${package_ensure}"
     $redis_download_url = "http://download.redis.io/releases/redis-2.8.13.tar.gz"
-    
-    file { "redis::install::dir":
-      ensure => $redis_tmp_directory,
-      path   => $::path,
+
+    file { "rediss::install::dir":   
+      ensure => directory,     
+      path   => $redis_tmp_directory, 
+      before => Anchor["redis::install::dir::anchor"]
     }
 
+    anchor { "redis::install::dir::anchor":
+      before => Exec["redis::install::download::extract"],
+    }
+    
     exec { "redis::install::download::extract":
       command => "wget -O - ${redis_download_url} | tar xz",
       cwd     => $redis_tmp_directory,
@@ -147,7 +152,7 @@ class redis (
 
     exec { "redis::install::make::install":
       command => "make && make install",
-      cwd     => "${redis_tmp_directory}/redis-${package_ensure}"
+      cwd     => "${redis_tmp_directory}/redis-${package_ensure}",
       path    => $::path,
       require => Exec["redis::install::download::extract"],
     }
