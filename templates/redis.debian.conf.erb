@@ -86,7 +86,7 @@ dir <%= @conf_dir %>
 #
 # slaveof <masterip> <masterport>
 <% if @conf_slaveof != 'UNSET' %>
-slaveof <%= @conf_slaveof %>
+slaveof <%= @conf_slaveof %> 6379
 <% end %>
 
 # If the master is password protected (using the "requirepass" configuration
