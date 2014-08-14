@@ -107,14 +107,21 @@ class redis::sentinel (
   exec { 'redis::sentinel::copy::config':
     command     => "cp ${conf_sentinel_orig} ${conf_sentinel}",
     refreshonly => true,
-    user        => 'root',
-    group       => 'root',
-    notify      => Service['sentinel'],
-    path        => $::path
+    user        => redis,
+    group       => redis,
+    path        => $::path,
+    notify      => Exec["redis::sentinel::chown::configs"]
   }
 
-  file { $conf_logrotate:
-    path    => $conf_logrotate,
+  exec { 'redis::sentinel::chown::configs':
+    command => "chown redis:redis /etc/sentinel.*",
+    user    => root,
+    group   => root,
+    notify  => Service['sentinel'], 
+    path    => $::path,
+  }
+
+  file { $conf_logrotate,
     content => template('redis/redis.logrotate.erb'),
     owner   => root,
     group   => root,
