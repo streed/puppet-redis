@@ -109,11 +109,12 @@ class redis::sentinel (
     user        => redis,
     group       => redis,
     notify      => Service['sentinel'],
+    path        => $::path
   }
 
   file { $conf_logrotate:
     path    => $conf_logrotate,
-    content => template('redis/logrotate.erb'),
+    content => template('redis/redis.logrotate.erb'),
     owner   => root,
     group   => root,
     mode    => '0644',
@@ -148,6 +149,7 @@ class redis::sentinel (
     file { $upstart_script:
       ensure  => present,
       content => template('redis/sentinel-init.conf.erb'),
+      mode    => "+x",
     }
   }
 

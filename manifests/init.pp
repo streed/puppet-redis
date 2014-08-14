@@ -166,12 +166,18 @@ class redis (
       require => Exec["redis::install::update::init.d"]
     }
 
-
     package { 'redis':
       name => $package
     }
 
   } else {
+    exec { "redis::package::update::init.d":
+      command => "sed -i 's/sbin/local\/bin/g' /etc/init.d/redis",
+      user    => 'root',
+      group   => 'root',
+      path    => $::path,
+    }
+
     package { 'redis':
       ensure => $package_ensure,
       name   => $package,
@@ -191,7 +197,7 @@ class redis (
 
   file { $conf_redis:
     path    => $conf_redis,
-    content => template('redis/${conf_template}'),
+    content => template("redis/${conf_template}"),
     owner   => root,
     group   => root,
     mode    => '0644',
