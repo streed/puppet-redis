@@ -107,8 +107,8 @@ class redis::sentinel (
   exec { 'redis::sentinel::copy::config':
     command     => "cp ${conf_sentinel_orig} ${conf_sentinel}",
     refreshonly => true,
-    user        => redis,
-    group       => redis,
+    user        => root,
+    group       => root,
     path        => $::path,
     notify      => Exec["redis::sentinel::chown::configs"]
   }
