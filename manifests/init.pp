@@ -173,7 +173,7 @@ class redis (
 
   } else {
     exec { "redis::package::update::init.d":
-      command => "sed -i 's/sbin/local\/bin/g' /etc/init.d/redis",
+      command => "sed -i 's/local\/bin/sbin/g' /etc/init.d/redis",
       user    => 'root',
       group   => 'root',
       path    => $::path,
