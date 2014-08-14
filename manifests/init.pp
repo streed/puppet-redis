@@ -164,6 +164,7 @@ class redis (
       command => "/etc/init.d/redis restart",
       path    => $::path,
       require => Exec["redis::install::update::init.d"]
+      notify  => Service["redis"]
     }
 
     package { 'redis':
@@ -176,6 +177,7 @@ class redis (
       user    => 'root',
       group   => 'root',
       path    => $::path,
+      notify  => Service["redis"],
     }
 
     package { 'redis':
