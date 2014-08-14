@@ -163,8 +163,8 @@ class redis (
     exec { "redis::install::restart":
       command => "/etc/init.d/redis restart",
       path    => $::path,
-      require => Exec["redis::install::update::init.d"]
-      notify  => Service["redis"]
+      require => Exec["redis::install::update::init.d"],
+      notify  => Service["redis"],
     }
 
     package { 'redis':
