@@ -97,17 +97,18 @@ class redis::sentinel (
   # only if it changed.
   file { $conf_sentinel_orig:
     content => template('redis/sentinel.conf.erb'),
-    owner   => redis,
-    group   => redis,
+    owner   => 'root',
+    group   => 'root',
     mode    => '0644',
     require => User['redis'],
-    notify  => Exec["cp ${conf_sentinel_orig} ${conf_sentinel}"],
+    notify  => Exec["redis::sentinel::copy::config"],
   }
 
-  exec { "cp ${conf_sentinel_orig} ${conf_sentinel}":
+  exec { 'redis::sentinel::copy::config':
+    command     => "cp ${conf_sentinel_orig} ${conf_sentinel}",
     refreshonly => true,
-    user        => redis,
-    group       => redis,
+    user        => 'root',
+    group       => 'root',
     notify      => Service['sentinel'],
     path        => $::path
   }
