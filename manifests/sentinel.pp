@@ -121,7 +121,7 @@ class redis::sentinel (
     path    => $::path,
   }
 
-  file { $conf_logrotate,
+  file { $conf_logrotate:
     content => template('redis/redis.logrotate.erb'),
     owner   => root,
     group   => root,
