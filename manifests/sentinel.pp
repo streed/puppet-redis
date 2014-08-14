@@ -43,6 +43,7 @@ class redis::sentinel (
   $conf_port                = '26379',
   $conf_dir                 = '/tmp/redis',
   $conf_daemonize           = 'yes',
+  $conf_logfile             = '/var/log/redis/sentinel.log',
   $sentinel_confs           = [],
   $service_enable           = true,
   $service_ensure           = 'running',
