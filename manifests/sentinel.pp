@@ -115,7 +115,7 @@ class redis::sentinel (
   }
 
   exec { 'redis::sentinel::chown::configs':
-    command => "chown redis:redis /etc/sentinel.*",
+    command => "chown redis:redis /etc/sentinel.* && chwon redis:redis /mnt/redis/*",
     user    => root,
     group   => root,
     notify  => Service['sentinel'], 
