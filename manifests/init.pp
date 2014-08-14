@@ -191,7 +191,7 @@ class redis (
 
   file { $conf_redis:
     path    => $conf_redis,
-    content => template('redis/redis.conf.erb'),
+    content => template('redis/${conf_template}'),
     owner   => root,
     group   => root,
     mode    => '0644',
@@ -200,7 +200,7 @@ class redis (
 
   file { $conf_logrotate:
     path    => $conf_logrotate,
-    content => template('redis/logrotate.erb'),
+    content => template('redis/redis.logrotate.erb'),
     owner   => root,
     group   => root,
     mode    => '0644',
